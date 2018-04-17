@@ -1,0 +1,8 @@
+[package]
+name = "client"
+version = "0.1.0"
+authors = ["bobbywang"]
+
+[dependencies]
+yew = { git = "https://github.com/DenisKolodin/yew.git" }
+todomvc_models = { path = "../todomvc_models" }
