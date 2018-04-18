@@ -1,9 +1,7 @@
 #![feature(plugin)]
 #![plugin(rocket_codegen)]
 
-
 extern crate todomvc;
-
 extern crate rocket;
 extern crate rocket_contrib;
 extern crate core;
@@ -21,7 +19,7 @@ use rocket_contrib::{Template, Json};
 use rocket::response::NamedFile;
 use rocket::request::{self, FromRequest};
 use rocket::{Request, State, Outcome};
-use rocket::http::Status;
+use rocket::http::{Status};
 use std::ops::Deref;
 use std::path::Path;
 use dotenv::dotenv;
@@ -34,7 +32,6 @@ use diesel::r2d2::{ConnectionManager, Pool, PooledConnection};
 use self::todomvc::*;
 use self::diesel::prelude::*;
 use todomvc_models::*;
-
 
 // An alias to the type for a pool of Diesel SQLite connections.
 type PgPool = Pool<ConnectionManager<PgConnection>>;
@@ -89,14 +86,19 @@ fn get_counter(conn: DbConn) -> QueryResult<Json<Vec<Item>>> {
     .map(|item| Json(item))
 }
 
-#[get("/app.js")]
-fn app() -> Option<NamedFile> {
-    NamedFile::open(Path::new("client/target/asmjs-unknown-emscripten/debug/client.js")).ok()
+#[get("/todomvc_client.js")]
+fn app_js() -> Option<NamedFile> {
+    NamedFile::open(Path::new("todomvc_client/target/wasm32-unknown-emscripten/debug/todomvc_client.js")).ok()
+}
+
+#[get("/todomvc_client.wasm")]
+fn app_wasm() -> Option<NamedFile> {
+    NamedFile::open(Path::new("todomvc_client/target/wasm32-unknown-emscripten/debug/todomvc_client.wasm")).ok()
 }
 
 fn main() {
     rocket::ignite()
-    .mount("/", routes![index, app, get_counter])
+    .mount("/", routes![index, app_js, app_wasm, get_counter])
     .attach(Template::fairing())
     .manage(init_pool())
     .launch();

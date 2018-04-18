@@ -4,6 +4,11 @@
     </head>
     <body>
         <em>loading...</em>
-        <script src="/app.js"></script>
+        <script>
+            var Module = {
+                wasmBinaryFile: "/todomvc_client.wasm"
+            }
+        </script>
+        <script src="/todomvc_client.js"></script>
     </body>
 </html>
